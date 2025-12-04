@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: agro-backend
+    env: node
+    repo: https://github.com/Fark04/Agro
+    branch: main
+    rootDir: backend
+    buildCommand: "npm install"
+    startCommand: "node server.js"
+    autoDeploy: true
+    plan: free
+
+  - type: web
+    name: agro-frontend
+    env: static
+    repo: https://github.com/Fark04/Agro
+    branch: main
+    rootDir: frontend
+    buildCommand: "npm install && npm run build"
+    startCommand: "npx serve -s dist"
+    autoDeploy: true
+    plan: free
+
+  - type: web
+    name: agro-nginx
+    env: docker
+    repo: https://github.com/Fark04/Agro
+    branch: main
+    rootDir: nginx
+    buildCommand: ""   # Dockerfile сам всё собирает
+    startCommand: ""   # Dockerfile сам запускает nginx
+    autoDeploy: true
+    plan: free
