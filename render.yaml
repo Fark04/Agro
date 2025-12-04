@@ -8,7 +8,7 @@ services:
     buildCommand: "npm install"
     startCommand: "node server.js"
     autoDeploy: true
-    plan: free
+    plan: starter
 
   - type: web
     name: agro-frontend
@@ -19,7 +19,7 @@ services:
     buildCommand: "npm install && npm run build"
     startCommand: "npx serve -s dist"
     autoDeploy: true
-    plan: free
+    plan: starter
 
   - type: web
     name: agro-nginx
@@ -27,7 +27,7 @@ services:
     repo: https://github.com/Fark04/Agro
     branch: main
     rootDir: nginx
-    buildCommand: ""   # Dockerfile сам всё собирает
-    startCommand: ""   # Dockerfile сам запускает nginx
+    buildCommand: ""
+    startCommand: ""
     autoDeploy: true
-    plan: free
+    plan: starter
