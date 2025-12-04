@@ -1,0 +1,187 @@
+/* Processing Status Styles */
+
+.processing-status,
+.success-status,
+.error-status {
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.status-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: linear-gradient(135deg, #f0f9ff 0%, #f0fdf4 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(59, 130, 246, 0.1);
+  transition: all 0.3s ease;
+}
+
+.status-card.success {
+  background: linear-gradient(135deg, #f0fdf4 0%, #f0fdf4 100%);
+  border-color: rgba(16, 185, 129, 0.2);
+}
+
+.status-card.error {
+  background: linear-gradient(135deg, #fef2f2 0%, #fef2f2 100%);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.spinner {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+.spinner-ring {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 3px solid transparent;
+  border-radius: 50%;
+  border-top-color: #3b82f6;
+  border-right-color: rgba(59, 130, 246, 0.3);
+  animation: spin 1.2s linear infinite;
+}
+
+.spinner-ring:nth-child(2) {
+  border-top-color: #10b981;
+  border-right-color: rgba(16, 185, 129, 0.3);
+  animation: spin 1.8s linear infinite reverse;
+  width: 75%;
+  height: 75%;
+  top: 12.5%;
+  left: 12.5%;
+}
+
+.spinner-ring:nth-child(3) {
+  border-top-color: #f59e0b;
+  border-right-color: rgba(245, 158, 11, 0.3);
+  animation: spin 2.4s linear infinite;
+  width: 50%;
+  height: 50%;
+  top: 25%;
+  left: 25%;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.status-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.status-label {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.status-description {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.success-status .status-label {
+  color: #059669;
+}
+
+.success-status .status-description {
+  color: #047857;
+}
+
+.error-status .status-label {
+  color: #dc2626;
+}
+
+.error-status .status-description {
+  color: #b91c1c;
+}
+
+/* Pulse animation for status cards */
+.processing-status .status-card {
+  animation: subtle-glow 2s ease-in-out infinite;
+}
+
+@keyframes subtle-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.05);
+  }
+}
+
+/* Smooth fade-in animation */
+.success-status .status-card,
+.error-status .status-card {
+  animation: fade-in 0.4s ease-out;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Icon animations */
+.success-status svg,
+.error-status svg {
+  flex-shrink: 0;
+  animation: icon-appear 0.5s ease-out;
+}
+
+@keyframes icon-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .status-card {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .spinner {
+    width: 32px;
+    height: 32px;
+  }
+
+  .status-label {
+    font-size: 14px;
+  }
+
+  .status-description {
+    font-size: 12px;
+  }
+}
+

@@ -1,0 +1,111 @@
+version: '3.8'
+
+services:
+  # Backend Server (Node.js + Express)
+  backend:
+    build: ./backend
+    container_name: agro_backend
+    expose:
+      - "5000"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - PORT=5000
+      - JWT_SECRET=${JWT_SECRET}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - DB_PATH=/app/data/agro.db
+    volumes:
+      - backend_data:/app/data
+      - backend_uploads:/app/uploads
+    restart: unless-stopped
+    networks:
+      - agro_network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend Server (React + Vite)
+  frontend:
+    build: ./frontend
+    container_name: agro_frontend
+    expose:
+      - "3000"
+    environment:
+      - VITE_API_URL=${VITE_API_URL}
+    restart: unless-stopped
+    networks:
+      - agro_network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Certbot for Let's Encrypt SSL certificates
+  certbot:
+    image: certbot/certbot:latest
+    container_name: agro_certbot
+    volumes:
+      - certbot_certs:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+    networks:
+      - agro_network
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
+    entrypoint: >
+      /bin/sh -c '
+      if [ ! -f /etc/letsencrypt/live/${DOMAIN_NAME}/fullchain.pem ]; then
+        echo "Certificate not found. Obtaining certificate for ${DOMAIN_NAME}...";
+        certbot certonly --webroot --webroot-path=/var/www/certbot \
+          --register-unsafely-without-email \
+          --agree-tos \
+          --non-interactive \
+          -d ${DOMAIN_NAME} || true;
+        echo "Certificate acquisition attempt completed";
+      fi;
+      trap exit TERM;
+      while :; do
+        certbot renew --webroot --webroot-path=/var/www/certbot --quiet;
+        sleep 12h & wait $${!};
+      done
+      '
+    restart: unless-stopped
+    depends_on:
+      - nginx
+
+  # Nginx Reverse Proxy with SSL
+  nginx:
+    build: ./nginx
+    container_name: agro_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - certbot_certs:/etc/letsencrypt:ro
+      - certbot_www:/var/www/certbot:ro
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
+    depends_on:
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - agro_network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  backend_data:
+  backend_uploads:
+  certbot_certs:
+  certbot_www:
+
+networks:
+  agro_network:
+    driver: bridge

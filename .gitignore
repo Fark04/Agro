@@ -1,0 +1,63 @@
+# ===== ENV FILES =====
+.env
+.env.local
+.env.*.local
+.env.production.local
+backend/.env
+frontend/.env
+
+# ===== NODE MODULES =====
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+npm-debug.log
+yarn-error.log
+.npm
+
+# ===== OS FILES =====
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+Desktop.ini
+
+# ===== IDE / EDITORS =====
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ===== BUILD FILES =====
+dist/
+build/
+frontend/dist/
+frontend/build/
+
+# ===== DOCKER =====
+.dockerignore
+
+# ===== DATABASE =====
+*.db
+*.sqlite
+*.sqlite3
+backend/agro.db
+
+# ===== UPLOADS =====
+uploads/
+backend/uploads/
+
+# ===== LOGS =====
+logs/
+*.log
+*.log.*
+
+# ===== TEMP =====
+tmp/
+temp/
+*.tmp
+
+# ===== SECURITY / KEYS =====
+*.pem
+*.key
+*.crt
